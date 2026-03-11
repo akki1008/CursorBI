@@ -50,7 +50,7 @@ export async function loginOrRegister(
     return { error: "Something went wrong while signing in. Try again." };
   }
 
-  let founderId = existing?.id as string | undefined;
+  let founderId: string | null = (existing?.id as string | undefined) ?? null;
 
   if (!founderId) {
     const { data: inserted, error: insertError } = await supabase
@@ -66,6 +66,10 @@ export async function loginOrRegister(
       return { error: "Unable to create founder account. Please try again." };
     }
     founderId = inserted.id;
+  }
+
+  if (!founderId) {
+    return { error: "Unable to sign in. Please try again." };
   }
 
   const session: AuthSession = {
